@@ -11,18 +11,19 @@ app=Flask(__name__)
 @app.route('/')
 def index():
 
-    return(render_template("index.html"))
+    return("<h1>Hello there</h1>")
 
 
+@app.route("/<username>")
+def user(username):
+    return("Hi"+username)
 
-@app.route("/about")
-def about():
-    return(render_template("about.html"))
+
+@app.route("/<username>/<message>")
+def send_message(username,message):
+    return("{0}:{1}".format(username,message))
 
 
-@app.route("/careers")
-def careers():
-    return(render_template("careers.html"))
 
 if __name__=="__main__":
     app.run(host=os.environ.get("IP","0.0.0.0"),
