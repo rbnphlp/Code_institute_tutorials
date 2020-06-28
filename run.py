@@ -1,6 +1,6 @@
 import os
-
 from flask import Flask,render_template,redirect
+from datetime import datetime
 
 
 # Create a instance of the class:
@@ -13,8 +13,9 @@ messages=[]
 
 def add_messages(username,message):
 #Use a Decorator  
+ now=datetime.now().strftime("%H:%M:%S")
 
- messages.append("{}: {}".format(username,message))
+ messages.append("({}) {}: {}".format(now,username,message))
 
 
 def get_messages(messages):
@@ -29,7 +30,7 @@ def index():
 
 @app.route("/<username>")
 def user(username):
-    return("<h1>Welcome {0} </h1>:{1}".format(username,get_messages(messages)))
+    return("<h1>Welcome {0} </h1>{1}".format(username,get_messages(messages)))
 
 
 @app.route("/<username>/<message>")
