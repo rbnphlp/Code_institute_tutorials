@@ -1,11 +1,12 @@
 import os
-from flask import Flask,render_template,redirect
+from flask import Flask,render_template,redirect,request,session
 from datetime import datetime
 
 
 # Create a instance of the class:
 app=Flask(__name__)
 
+app.secret_key="mykey"
 
 
 # add  messages :
@@ -15,22 +16,26 @@ def add_messages(username,message):
 #Use a Decorator  
  now=datetime.now().strftime("%H:%M:%S")
 
- messages.append("({}) {}: {}".format(now,username,message))
+ messages_dic={"timestamp": now,"from":username,"message":message}
+
+ messages.append(messages_dic)
 
 
-def get_messages(messages):
-    return("<br>".join(messages))
-
-
-@app.route('/')
+@app.route('/',methods=["GET","POST"]) # Add routes for both post and get methods
 def index():
+    if request.method=="POST":
+        # Get username from the form 
+        session["username"]=request.form["username"]
+        
+    if "username" in session:
+        return redirect(session["username"])
 
-    return("<h1>Hello there</h1>")
+    return render_template("index.html")
 
 
 @app.route("/<username>")
 def user(username):
-    return("<h1>Welcome {0} </h1>{1}".format(username,get_messages(messages)))
+    return (render_template("chat.html",username=username,chat_messages=messages))
 
 
 @app.route("/<username>/<message>")
